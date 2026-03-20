@@ -54,5 +54,8 @@ int main(){
 	close(fd_write);
 	close(fd_read);
 	
+	unlink("pipe_ab");
+	unlink("pipe_ba");
+
 	return 0;
 }

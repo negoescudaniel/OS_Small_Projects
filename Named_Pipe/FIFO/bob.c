@@ -15,9 +15,6 @@ int main(){
 	int A, K;
 	char msg[100];
 	
-	mkfifo("pipe_ab", 0666);
-	mkfifo("pipe_ba", 0666);
-	
 	fd_read = open("pipe_ab", O_RDONLY);
 	fd_write = open("pipe_ba", O_WRONLY);
 	
