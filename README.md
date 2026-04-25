@@ -43,6 +43,29 @@ In the `Events_Signals` directory, I implemented a custom process scheduler wher
 * Reaching a computation target triggers a `SIGUSR1` signal, causing the parent to perform a graceful system shutdown using `SIGTERM`
 
 
+## 🔹 QNX Message Passing – Parent-Child Encryption
+
+In the `messages` directory, I implemented a client-server style communication model between a parent and a child process utilizing QNX channels (`simple_messages.c`).
+
+### Key Features:
+
+* The parent process creates a local communication channel and waits in a blocked state for incoming requests.
+* The child process establishes a connection to the parent's channel, reads user input, and transmits it using a blocking `MsgSend` function.
+* The parent receives the payload, processes it by applying a basic encryption algorithm (shifting character ASCII values), and returns the encrypted text via `MsgReply`, which unblocks the child.
+* Demonstrates synchronous, tightly coupled inter-process communication native to the QNX Neutrino RTOS architecture.
+
+
+## 🔹 POSIX Message Queues – QoS Traffic Priority Simulator
+
+In the `message_queues` directory, I implemented a Quality of Service (QoS) network traffic prioritization system using POSIX message queues with two independent programs (`expeditor.c` and `router.c`).
+
+### Key Features:
+
+* Communication is handled via a shared POSIX message queue (`/coada_qos`) bridging a traffic generator and a routing simulator.
+* The `expeditor` process acts as a user interface to generate network traffic, assigning strict OS-level priorities to different data types (e.g., Priority 5 for time-sensitive VOIP traffic, Priority 2 for standard DOWNLOADs).
+* The `router` process continuously polls the queue and extracts messages strictly based on priority rather than chronological order (FIFO), ensuring critical packets are processed first.
+* Includes a built-in `SHUTDOWN` command that allows the sender to safely terminate the router process and successfully clean up the queue from memory.
+
 ## Motivation
 
 This repository was created as part of my learning process in operating systems and embedded software, with a focus on practical implementations that reflect real-world system behavior.
