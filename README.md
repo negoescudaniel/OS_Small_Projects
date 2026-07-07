@@ -66,6 +66,28 @@ In the `message_queues` directory, I implemented a Quality of Service (QoS) netw
 * The `router` process continuously polls the queue and extracts messages strictly based on priority rather than chronological order (FIFO), ensuring critical packets are processed first.
 * Includes a built-in `SHUTDOWN` command that allows the sender to safely terminate the router process and successfully clean up the queue from memory.
 
+## 🔹 Shared Memory & Semaphores – Cryptographic Module
+
+In the `Shared_memory` directory, I implemented a synchronized communication system between a parent and child process using POSIX shared memory and anonymous semaphores (`sh_mem+sem.c`).
+
+### Key Features:
+
+* Communication is achieved through a mapped shared memory segment (`mmap`) that encapsulates both the data payload and the synchronization primitives.
+* Two process-shared anonymous semaphores (`sem_t`) are used to enforce a strict execution order, preventing race conditions while reading and writing data.
+* The child process acts as a cryptographic module that waits for the parent's data, applies an XOR encryption algorithm using a shared key, and signals back upon completion.
+* The parent process retrieves the processed data, outputs it in hexadecimal format, and ensures proper system cleanup by safely unmapping the memory and destroying the semaphores.
+
+## 🔹 Semaphores & Mutexes – Process Synchronization Mechanisms
+
+In the `Semaphore_and_Mutex` directory, I implemented process synchronization mechanisms to manage concurrent access to shared resources using both named semaphores and process-shared mutexes.
+
+### Key Features:
+
+* **Named Semaphores:** Two independent programs (Main and Secondary Cards) simulate an ATM withdrawal system, accessing a shared bank account file. POSIX semaphores (`sem_open`) enforce mutual exclusion, preventing race conditions when both processes attempt to read and update the balance simultaneously.
+* **Process-Shared Mutex:** A separate program demonstrates synchronization between a parent and child process (created via `fork()`) interacting with a shared data structure placed in anonymous shared memory (`mmap`).
+* **Critical Section Management:** A POSIX mutex configured with the `PTHREAD_PROCESS_SHARED` attribute ensures safe, strictly sequential modifications to a shared counter and transaction log.
+* **Resource Cleanup:** Both implementations emphasize robust system hygiene, ensuring that semaphores, mutex attributes, and memory-mapped files are properly destroyed, unmapped, and unlinked upon completion.
+
 ## Motivation
 
 This repository was created as part of my learning process in operating systems and embedded software, with a focus on practical implementations that reflect real-world system behavior.
